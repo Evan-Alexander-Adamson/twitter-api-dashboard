@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server'
 import axios from 'axios'
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  })
+}
+
 export async function POST(req: Request) {
   try {
     const { endpoint, params } = await req.json()
@@ -26,6 +37,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(response.data)
   } catch (error: any) {
+    console.error('Twitter API Error:', error.response?.data || error.message)
     return NextResponse.json(
       { error: error.message || 'Internal Server Error' },
       { status: error.response?.status || 500 }
